@@ -76,11 +76,11 @@ class ParseServer {
    * @param {ParseServerOptions} options the parse server initialization options
    */
   constructor(options: ParseServerOptions) {
-    if(!process.env.USER_SERVICE)
+    /*if(!process.env.USER_SERVICE)
     {
       UsersRouter = AdminUsersRouter;
       SessionsRouter = AdminSessionsRouter;
-    }
+    }*/
     injectDefaults(options);
     const {
       appId = requiredParameter('You must provide an appId!'),
