@@ -3,7 +3,7 @@ import Parse from 'parse/node';
 import rest from '../rest';
 import Auth from '../AdminAuth';
 
-export class SessionsRouter extends ClassesRouter {
+export class AdminSessionsRouter extends ClassesRouter {
   className() {
     return '_AdminSession';
   }

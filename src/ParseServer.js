@@ -29,15 +29,10 @@ import { PushRouter } from './Routers/PushRouter';
 import { CloudCodeRouter } from './Routers/CloudCodeRouter';
 import { RolesRouter } from './Routers/RolesRouter';
 import { SchemasRouter } from './Routers/SchemasRouter';
-if (!process.env.USER_SERVICE) {
-import { SessionsRouter } from './Routers/AdminSessionsRouter';
-import { UsersRouter } from './Routers/AdminUsersRouter';
-}
-else
-{
-  import { SessionsRouter } from './Routers/SessionsRouter';
-  import { UsersRouter } from './Routers/UsersRouter';
-}
+import { AdminSessionsRouter } from './Routers/AdminSessionsRouter';
+import { AdminUsersRouter } from './Routers/AdminUsersRouter';
+import { SessionsRouter } from './Routers/SessionsRouter';
+import { UsersRouter } from './Routers/UsersRouter';
 import { PurgeRouter } from './Routers/PurgeRouter';
 import { AudiencesRouter } from './Routers/AudiencesRouter';
 import { AggregateRouter } from './Routers/AggregateRouter';
@@ -81,6 +76,11 @@ class ParseServer {
    * @param {ParseServerOptions} options the parse server initialization options
    */
   constructor(options: ParseServerOptions) {
+    if(!process.env.USER_SERVICE)
+    {
+      UsersRouter = AdminUsersRouter;
+      SessionsRouter = AdminSessionsRouter;
+    }
     injectDefaults(options);
     const {
       appId = requiredParameter('You must provide an appId!'),
