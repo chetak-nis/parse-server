@@ -45,6 +45,14 @@ const defaultColumns: { [string]: SchemaFields } = Object.freeze({
     emailVerified: { type: 'Boolean' },
     authData: { type: 'Object' },
   },
+   // The additional default columns for the _User collection (in addition to DefaultCols)
+   _AdminUser: {
+    username: { type: 'String' },
+    password: { type: 'String' },
+    email: { type: 'String' },
+    emailVerified: { type: 'Boolean' },
+    authData: { type: 'Object' },
+  },
   // The additional default columns for the _Installation collection (in addition to DefaultCols)
   _Installation: {
     installationId: { type: 'String' },
@@ -71,6 +79,15 @@ const defaultColumns: { [string]: SchemaFields } = Object.freeze({
   _Session: {
     restricted: { type: 'Boolean' },
     user: { type: 'Pointer', targetClass: '_User' },
+    installationId: { type: 'String' },
+    sessionToken: { type: 'String' },
+    expiresAt: { type: 'Date' },
+    createdWith: { type: 'Object' },
+  },
+  // The additional default columns for the _Session collection (in addition to DefaultCols)
+  _AdminSession: {
+    restricted: { type: 'Boolean' },
+    user: { type: 'Pointer', targetClass: '_AdminUser' },
     installationId: { type: 'String' },
     sessionToken: { type: 'String' },
     expiresAt: { type: 'Date' },

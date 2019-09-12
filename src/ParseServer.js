@@ -29,8 +29,15 @@ import { PushRouter } from './Routers/PushRouter';
 import { CloudCodeRouter } from './Routers/CloudCodeRouter';
 import { RolesRouter } from './Routers/RolesRouter';
 import { SchemasRouter } from './Routers/SchemasRouter';
-import { SessionsRouter } from './Routers/SessionsRouter';
-import { UsersRouter } from './Routers/UsersRouter';
+if (!process.env.USER_SERVICE) {
+import { SessionsRouter } from './Routers/AdminSessionsRouter';
+import { UsersRouter } from './Routers/AdminUsersRouter';
+}
+else
+{
+  import { SessionsRouter } from './Routers/SessionsRouter';
+  import { UsersRouter } from './Routers/UsersRouter';
+}
 import { PurgeRouter } from './Routers/PurgeRouter';
 import { AudiencesRouter } from './Routers/AudiencesRouter';
 import { AggregateRouter } from './Routers/AggregateRouter';
