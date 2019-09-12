@@ -29,8 +29,8 @@ import { PushRouter } from './Routers/PushRouter';
 import { CloudCodeRouter } from './Routers/CloudCodeRouter';
 import { RolesRouter } from './Routers/RolesRouter';
 import { SchemasRouter } from './Routers/SchemasRouter';
-import { AdminSessionsRouter } from './Routers/AdminSessionsRouter';
-import { AdminUsersRouter } from './Routers/AdminUsersRouter';
+/*import { AdminSessionsRouter } from './Routers/AdminSessionsRouter';
+import { AdminUsersRouter } from './Routers/AdminUsersRouter'; */
 import { SessionsRouter } from './Routers/SessionsRouter';
 import { UsersRouter } from './Routers/UsersRouter';
 import { PurgeRouter } from './Routers/PurgeRouter';
