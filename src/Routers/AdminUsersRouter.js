@@ -9,7 +9,7 @@ import Auth from '../AdiminAuth';
 import passwordCrypto from '../password';
 import { maybeRunTrigger, Types as TriggerTypes } from '../triggers';
 
-export class UsersRouter extends ClassesRouter {
+export class AdminUsersRouter extends ClassesRouter {
   className() {
     return '_AdminUser';
   }
