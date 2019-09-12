@@ -97,4 +97,4 @@ export class AdminSessionsRouter extends ClassesRouter {
   }
 }
 
-export default SessionsRouter;
+export default AdminSessionsRouter;

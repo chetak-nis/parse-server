@@ -29,8 +29,8 @@ import { PushRouter } from './Routers/PushRouter';
 import { CloudCodeRouter } from './Routers/CloudCodeRouter';
 import { RolesRouter } from './Routers/RolesRouter';
 import { SchemasRouter } from './Routers/SchemasRouter';
-/*import { AdminSessionsRouter } from './Routers/AdminSessionsRouter';
-import { AdminUsersRouter } from './Routers/AdminUsersRouter'; */
+import { AdminSessionsRouter } from './Routers/AdminSessionsRouter';
+import { AdminUsersRouter } from './Routers/AdminUsersRouter';
 import { SessionsRouter } from './Routers/SessionsRouter';
 import { UsersRouter } from './Routers/UsersRouter';
 import { PurgeRouter } from './Routers/PurgeRouter';
@@ -76,11 +76,11 @@ class ParseServer {
    * @param {ParseServerOptions} options the parse server initialization options
    */
   constructor(options: ParseServerOptions) {
-    /*if(!process.env.USER_SERVICE)
+    if(!process.env.USER_SERVICE)
     {
       UsersRouter = AdminUsersRouter;
       SessionsRouter = AdminSessionsRouter;
-    }*/
+    }
     injectDefaults(options);
     const {
       appId = requiredParameter('You must provide an appId!'),

@@ -454,4 +454,4 @@ export class AdminUsersRouter extends ClassesRouter {
   }
 }
 
-export default UsersRouter;
+export default AdminUsersRouter;
