@@ -21,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var RestQuery = require('../RestQuery');
 
-var Auth = require('../Auth');
+var Auth = require('../AdiminAuth');
 
 class UserController extends _AdaptableController.default {
   constructor(adapter, appId, options = {}) {

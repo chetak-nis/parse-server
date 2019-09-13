@@ -5,7 +5,7 @@ import Config from '../Config';
 import AccountLockout from '../AccountLockout';
 import ClassesRouter from './ClassesRouter';
 import rest from '../rest';
-import Auth from '../AdiminAuth';
+import Auth from '../AdminAuth';
 import passwordCrypto from '../password';
 import { maybeRunTrigger, Types as TriggerTypes } from '../triggers';
 
