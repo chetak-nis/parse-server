@@ -1,10 +1,13 @@
 import AppCache from './cache';
 import Parse from 'parse/node';
 import auth from './Auth';
+import { auth as adminauth } from './AdminAuth';
 import Config from './Config';
 import ClientSDK from './ClientSDK';
 import defaultLogger from './logger';
-
+if (!process.env.USER_SERVICE) {
+  auth = adminauth;
+}
 // Checks that the request is authorized for this app and checks user
 // auth too.
 // The bodyparser should run before this middleware.

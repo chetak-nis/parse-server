@@ -107,7 +107,7 @@ const getAuthForSessionToken = async function({
     );
     results = (await query.execute()).results;
   } else {
-    results = (await new Parse.Query(Parse.Session)
+    results = (await new Parse.Query('AdminSession')
       .limit(1)
       .include('user')
       .equalTo('sessionToken', sessionToken)

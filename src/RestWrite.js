@@ -552,7 +552,7 @@ RestWrite.prototype.handleAuthData = function(authData) {
 RestWrite.prototype.transformUser = function() {
   var promise = Promise.resolve();
 
-  if (this.className !== '_User') {
+  if (this.className !== '_User' || this.className !== 'AdminUser') {
     return promise;
   }
 
@@ -565,19 +565,45 @@ RestWrite.prototype.transformUser = function() {
   if (this.query && this.objectId()) {
     // If we're updating a _User object, we need to clear out the cache for that user. Find all their
     // session tokens, and remove them from the cache.
-    promise = new RestQuery(this.config, Auth.master(this.config), '_Session', {
-      user: {
-        __type: 'Pointer',
-        className: '_User',
-        objectId: this.objectId(),
-      },
-    })
-      .execute()
-      .then(results => {
-        results.results.forEach(session =>
-          this.config.cacheController.user.del(session.sessionToken)
-        );
-      });
+    if (this.className === '_User') {
+      promise = new RestQuery(
+        this.config,
+        Auth.master(this.config),
+        '_Session',
+        {
+          user: {
+            __type: 'Pointer',
+            className: '_User',
+            objectId: this.objectId(),
+          },
+        }
+      )
+        .execute()
+        .then(results => {
+          results.results.forEach(session =>
+            this.config.cacheController.user.del(session.sessionToken)
+          );
+        });
+    } else {
+      promise = new RestQuery(
+        this.config,
+        Auth.master(this.config),
+        'AdminSession',
+        {
+          user: {
+            __type: 'Pointer',
+            className: 'AdminUser',
+            objectId: this.objectId(),
+          },
+        }
+      )
+        .execute()
+        .then(results => {
+          results.results.forEach(session =>
+            this.config.cacheController.user.del(session.sessionToken)
+          );
+        });
+    }
   }
 
   return promise

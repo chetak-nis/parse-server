@@ -101,7 +101,7 @@ export class UsersRouter extends ClassesRouter {
             user = results[0];
           }
 
-          return passwordCrypto.compare(password, user.password);
+          return passwordCrypto.compare(password, user._hashed_password);
         })
         .then(correct => {
           isValidPassword = correct;
@@ -175,7 +175,7 @@ export class UsersRouter extends ClassesRouter {
       .find(
         req.config,
         Auth.master(req.config),
-        '_AdminSession',
+        'AdminSession',
         { sessionToken },
         { include: 'user' },
         req.info.clientSDK
@@ -287,7 +287,7 @@ export class UsersRouter extends ClassesRouter {
         .find(
           req.config,
           Auth.master(req.config),
-          '_AdminSession',
+          'AdminSession',
           { sessionToken: req.info.sessionToken },
           undefined,
           req.info.clientSDK
@@ -298,7 +298,7 @@ export class UsersRouter extends ClassesRouter {
               .del(
                 req.config,
                 Auth.master(req.config),
-                '_AdminSession',
+                'AdminSession',
                 records.results[0].objectId
               )
               .then(() => {

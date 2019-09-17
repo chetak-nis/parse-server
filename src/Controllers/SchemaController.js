@@ -378,7 +378,7 @@ const convertSchemaToAdapterSchema = (schema: any) => {
   schema.fields._rperm = { type: 'Array' };
   schema.fields._wperm = { type: 'Array' };
 
-  if (schema.className === '_User') {
+  if (schema.className === '_User' || schema.className === 'AdminUser') {
     delete schema.fields.password;
     schema.fields._hashed_password = { type: 'String' };
   }
@@ -392,7 +392,7 @@ const convertAdapterSchemaToParseSchema = ({ ...schema }) => {
 
   schema.fields.ACL = { type: 'ACL' };
 
-  if (schema.className === '_User') {
+  if (schema.className === '_User' || schema.className === 'AdminUser') {
     delete schema.fields.authData; //Auth data is implicit
     delete schema.fields._hashed_password;
     schema.fields.password = { type: 'String' };

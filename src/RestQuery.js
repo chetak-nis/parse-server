@@ -36,7 +36,7 @@ function RestQuery(
   this.findOptions = {};
 
   if (!this.auth.isMaster) {
-    if (this.className == '_Session') {
+    if (this.className == '_Session' || this.className == 'AdminSession') {
       if (!this.auth.user) {
         throw new Parse.Error(
           Parse.Error.INVALID_SESSION_TOKEN,
