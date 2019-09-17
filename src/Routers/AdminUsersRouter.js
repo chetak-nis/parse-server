@@ -9,7 +9,7 @@ import Auth from '../AdminAuth';
 import passwordCrypto from '../password';
 import { maybeRunTrigger, Types as TriggerTypes } from '../triggers';
 
-export class AdminUsersRouter extends ClassesRouter {
+export class UsersRouter extends ClassesRouter {
   className() {
     return 'AdminUser';
   }
@@ -175,7 +175,7 @@ export class AdminUsersRouter extends ClassesRouter {
       .find(
         req.config,
         Auth.master(req.config),
-        'AdminSession',
+        '_AdminSession',
         { sessionToken },
         { include: 'user' },
         req.info.clientSDK
@@ -196,7 +196,7 @@ export class AdminUsersRouter extends ClassesRouter {
           user.sessionToken = sessionToken;
 
           // Remove hidden properties.
-          AdminUsersRouter.removeHiddenProperties(user);
+          UsersRouter.removeHiddenProperties(user);
 
           return { response: user };
         }
@@ -239,7 +239,7 @@ export class AdminUsersRouter extends ClassesRouter {
     }
 
     // Remove hidden properties.
-    AdminUsersRouter.removeHiddenProperties(user);
+    UsersRouter.removeHiddenProperties(user);
 
     // Before login trigger; throws if failure
     await maybeRunTrigger(
@@ -271,7 +271,7 @@ export class AdminUsersRouter extends ClassesRouter {
     return this._authenticateUserFromRequest(req)
       .then(user => {
         // Remove hidden properties.
-        AdminUsersRouter.removeHiddenProperties(user);
+        UsersRouter.removeHiddenProperties(user);
 
         return { response: user };
       })
@@ -287,7 +287,7 @@ export class AdminUsersRouter extends ClassesRouter {
         .find(
           req.config,
           Auth.master(req.config),
-          'AdminSession',
+          '_AdminSession',
           { sessionToken: req.info.sessionToken },
           undefined,
           req.info.clientSDK
@@ -298,7 +298,7 @@ export class AdminUsersRouter extends ClassesRouter {
               .del(
                 req.config,
                 Auth.master(req.config),
-                'AdminSession',
+                '_AdminSession',
                 records.results[0].objectId
               )
               .then(() => {
@@ -454,4 +454,4 @@ export class AdminUsersRouter extends ClassesRouter {
   }
 }
 
-export default AdminUsersRouter;
+export default UsersRouter;

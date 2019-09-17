@@ -173,6 +173,8 @@ const systemClasses = Object.freeze([
   '_JobStatus',
   '_JobSchedule',
   '_Audience',
+  'AdminUser',
+  'AdminSession',
 ]);
 
 const volatileClasses = Object.freeze([

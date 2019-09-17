@@ -201,7 +201,7 @@ const filterSensitiveData = (
 ) => {
   protectedFields && protectedFields.forEach(k => delete object[k]);
 
-  if (className !== '_User') {
+  if (className !== '_User' || className !== 'AdminUser') {
     return object;
   }
 
@@ -353,7 +353,7 @@ const flattenUpdateOperatorsForCreate = object => {
 };
 
 const transformAuthData = (className, object, schema) => {
-  if (object.authData && className === '_User') {
+  if (object.authData && (className === '_User' || className === 'AdminUser')) {
     Object.keys(object.authData).forEach(provider => {
       const providerData = object.authData[provider];
       const fieldName = `_auth_data_${provider}`;
