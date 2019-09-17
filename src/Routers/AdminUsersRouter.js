@@ -101,7 +101,7 @@ export class UsersRouter extends ClassesRouter {
             user = results[0];
           }
 
-          return passwordCrypto.compare(password, user._hashed_password);
+          return passwordCrypto.compare(password, user.password);
         })
         .then(correct => {
           isValidPassword = correct;

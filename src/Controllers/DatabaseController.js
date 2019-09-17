@@ -201,7 +201,7 @@ const filterSensitiveData = (
 ) => {
   protectedFields && protectedFields.forEach(k => delete object[k]);
 
-  if (className !== '_User' || className !== 'AdminUser') {
+  if (className !== '_User' && className !== 'AdminUser') {
     return object;
   }
 
