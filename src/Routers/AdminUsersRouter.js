@@ -11,7 +11,7 @@ import { maybeRunTrigger, Types as TriggerTypes } from '../triggers';
 
 export class AdminUsersRouter extends ClassesRouter {
   className() {
-    return '_AdminUser';
+    return 'AdminUser';
   }
 
   /**
@@ -82,7 +82,7 @@ export class AdminUsersRouter extends ClassesRouter {
         query = { $or: [{ username }, { email: username }] };
       }
       return req.config.database
-        .find('_AdminUser', query)
+        .find('AdminUser', query)
         .then(results => {
           if (!results.length) {
             throw new Parse.Error(
@@ -175,7 +175,7 @@ export class AdminUsersRouter extends ClassesRouter {
       .find(
         req.config,
         Auth.master(req.config),
-        '_AdminSession',
+        'AdminSession',
         { sessionToken },
         { include: 'user' },
         req.info.clientSDK
@@ -196,7 +196,7 @@ export class AdminUsersRouter extends ClassesRouter {
           user.sessionToken = sessionToken;
 
           // Remove hidden properties.
-          UsersRouter.removeHiddenProperties(user);
+          AdminUsersRouter.removeHiddenProperties(user);
 
           return { response: user };
         }
@@ -212,10 +212,10 @@ export class AdminUsersRouter extends ClassesRouter {
 
       if (!changedAt) {
         // password was created before expiry policy was enabled.
-        // simply update _AdminUser object so that it will start enforcing from now
+        // simply update AdminUser object so that it will start enforcing from now
         changedAt = new Date();
         req.config.database.update(
-          '_AdminUser',
+          'AdminUser',
           { username: user.username },
           { _password_changed_at: Parse._encode(changedAt) }
         );
@@ -239,13 +239,13 @@ export class AdminUsersRouter extends ClassesRouter {
     }
 
     // Remove hidden properties.
-    UsersRouter.removeHiddenProperties(user);
+    AdminUsersRouter.removeHiddenProperties(user);
 
     // Before login trigger; throws if failure
     await maybeRunTrigger(
       TriggerTypes.beforeLogin,
       req.auth,
-      Parse.User.fromJSON(Object.assign({ className: '_AdminUser' }, user)),
+      Parse.User.fromJSON(Object.assign({ className: 'AdminUser' }, user)),
       null,
       req.config
     );
@@ -271,7 +271,7 @@ export class AdminUsersRouter extends ClassesRouter {
     return this._authenticateUserFromRequest(req)
       .then(user => {
         // Remove hidden properties.
-        UsersRouter.removeHiddenProperties(user);
+        AdminUsersRouter.removeHiddenProperties(user);
 
         return { response: user };
       })
@@ -287,7 +287,7 @@ export class AdminUsersRouter extends ClassesRouter {
         .find(
           req.config,
           Auth.master(req.config),
-          '_AdminSession',
+          'AdminSession',
           { sessionToken: req.info.sessionToken },
           undefined,
           req.info.clientSDK
@@ -298,7 +298,7 @@ export class AdminUsersRouter extends ClassesRouter {
               .del(
                 req.config,
                 Auth.master(req.config),
-                '_AdminSession',
+                'AdminSession',
                 records.results[0].objectId
               )
               .then(() => {

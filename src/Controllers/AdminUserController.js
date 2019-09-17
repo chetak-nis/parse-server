@@ -1,23 +1,29 @@
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
 exports.default = exports.UserController = void 0;
 
-var _cryptoUtils = require("../cryptoUtils");
+var _cryptoUtils = require('../cryptoUtils');
 
-var _triggers = require("../triggers");
+var _triggers = require('../triggers');
 
-var _AdaptableController = _interopRequireDefault(require("./AdaptableController"));
+var _AdaptableController = _interopRequireDefault(
+  require('./AdaptableController')
+);
 
-var _MailAdapter = _interopRequireDefault(require("../Adapters/Email/MailAdapter"));
+var _MailAdapter = _interopRequireDefault(
+  require('../Adapters/Email/MailAdapter')
+);
 
-var _rest = _interopRequireDefault(require("../rest"));
+var _rest = _interopRequireDefault(require('../rest'));
 
-var _node = _interopRequireDefault(require("parse/node"));
+var _node = _interopRequireDefault(require('parse/node'));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var RestQuery = require('../RestQuery');
 
@@ -51,7 +57,9 @@ class UserController extends _AdaptableController.default {
       user.emailVerified = false;
 
       if (this.config.emailVerifyTokenValidityDuration) {
-        user._email_verify_token_expires_at = _node.default._encode(this.config.generateEmailVerifyTokenExpiresAt());
+        user._email_verify_token_expires_at = _node.default._encode(
+          this.config.generateEmailVerifyTokenExpiresAt()
+        );
       }
     }
   }
@@ -65,63 +73,84 @@ class UserController extends _AdaptableController.default {
 
     const query = {
       username: username,
-      _email_verify_token: token
+      _email_verify_token: token,
     };
     const updateFields = {
       emailVerified: true,
       _email_verify_token: {
-        __op: 'Delete'
-      }
+        __op: 'Delete',
+      },
     }; // if the email verify token needs to be validated then
     // add additional query params and additional fields that need to be updated
 
     if (this.config.emailVerifyTokenValidityDuration) {
       query.emailVerified = false;
       query._email_verify_token_expires_at = {
-        $gt: _node.default._encode(new Date())
+        $gt: _node.default._encode(new Date()),
       };
       updateFields._email_verify_token_expires_at = {
-        __op: 'Delete'
+        __op: 'Delete',
       };
     }
 
     const masterAuth = Auth.master(this.config);
-    var checkIfAlreadyVerified = new RestQuery(this.config, Auth.master(this.config), '_AdminUser', {
-      username: username,
-      emailVerified: true
-    });
+    var checkIfAlreadyVerified = new RestQuery(
+      this.config,
+      Auth.master(this.config),
+      'AdminUser',
+      {
+        username: username,
+        emailVerified: true,
+      }
+    );
     return checkIfAlreadyVerified.execute().then(result => {
       if (result.results.length) {
         return Promise.resolve(result.results.length[0]);
       }
 
-      return _rest.default.update(this.config, masterAuth, '_AdminUser', query, updateFields);
+      return _rest.default.update(
+        this.config,
+        masterAuth,
+        'AdminUser',
+        query,
+        updateFields
+      );
     });
   }
 
   checkResetTokenValidity(username, token) {
-    return this.config.database.find('_AdminUser', {
-      username: username,
-      _perishable_token: token
-    }, {
-      limit: 1
-    }).then(results => {
-      if (results.length != 1) {
-        throw 'Failed to reset password: username / email / token is invalid';
-      }
-
-      if (this.config.passwordPolicy && this.config.passwordPolicy.resetTokenValidityDuration) {
-        let expiresDate = results[0]._perishable_token_expires_at;
-
-        if (expiresDate && expiresDate.__type == 'Date') {
-          expiresDate = new Date(expiresDate.iso);
+    return this.config.database
+      .find(
+        'AdminUser',
+        {
+          username: username,
+          _perishable_token: token,
+        },
+        {
+          limit: 1,
+        }
+      )
+      .then(results => {
+        if (results.length != 1) {
+          throw 'Failed to reset password: username / email / token is invalid';
         }
 
-        if (expiresDate < new Date()) throw 'The password reset link has expired';
-      }
+        if (
+          this.config.passwordPolicy &&
+          this.config.passwordPolicy.resetTokenValidityDuration
+        ) {
+          let expiresDate = results[0]._perishable_token_expires_at;
 
-      return results[0];
-    });
+          if (expiresDate && expiresDate.__type == 'Date') {
+            expiresDate = new Date(expiresDate.iso);
+          }
+
+          if (expiresDate < new Date())
+            throw 'The password reset link has expired';
+        }
+
+        return results[0];
+      });
   }
 
   getUserIfNeeded(user) {
@@ -139,8 +168,13 @@ class UserController extends _AdaptableController.default {
       where.email = user.email;
     }
 
-    var query = new RestQuery(this.config, Auth.master(this.config), '_AdminUser', where);
-    return query.execute().then(function (result) {
+    var query = new RestQuery(
+      this.config,
+      Auth.master(this.config),
+      'AdminUser',
+      where
+    );
+    return query.execute().then(function(result) {
       if (result.results.length != 1) {
         throw undefined;
       }
@@ -158,11 +192,16 @@ class UserController extends _AdaptableController.default {
 
     this.getUserIfNeeded(user).then(user => {
       const username = encodeURIComponent(user.username);
-      const link = buildEmailLink(this.config.verifyEmailURL, username, token, this.config);
+      const link = buildEmailLink(
+        this.config.verifyEmailURL,
+        username,
+        token,
+        this.config
+      );
       const options = {
         appName: this.config.appName,
         link: link,
-        user: (0, _triggers.inflate)('_AdminUser', user)
+        user: (0, _triggers.inflate)('AdminUser', user),
       };
 
       if (this.adapter.sendVerificationEmail) {
@@ -179,17 +218,20 @@ class UserController extends _AdaptableController.default {
    * @returns {*}
    */
 
-
   regenerateEmailVerifyToken(user) {
     this.setEmailVerifyToken(user);
-    return this.config.database.update('_AdminUser', {
-      username: user.username
-    }, user);
+    return this.config.database.update(
+      'AdminUser',
+      {
+        username: user.username,
+      },
+      user
+    );
   }
 
   resendVerificationEmail(username) {
     return this.getUserIfNeeded({
-      username: username
+      username: username,
     }).then(aUser => {
       if (!aUser || aUser.emailVerified) {
         throw undefined;
@@ -203,23 +245,37 @@ class UserController extends _AdaptableController.default {
 
   setPasswordResetToken(email) {
     const token = {
-      _perishable_token: (0, _cryptoUtils.randomString)(25)
+      _perishable_token: (0, _cryptoUtils.randomString)(25),
     };
 
-    if (this.config.passwordPolicy && this.config.passwordPolicy.resetTokenValidityDuration) {
-      token._perishable_token_expires_at = _node.default._encode(this.config.generatePasswordResetTokenExpiresAt());
+    if (
+      this.config.passwordPolicy &&
+      this.config.passwordPolicy.resetTokenValidityDuration
+    ) {
+      token._perishable_token_expires_at = _node.default._encode(
+        this.config.generatePasswordResetTokenExpiresAt()
+      );
     }
 
-    return this.config.database.update('_AdminUser', {
-      $or: [{
-        email
-      }, {
-        username: email,
-        email: {
-          $exists: false
-        }
-      }]
-    }, token, {}, true);
+    return this.config.database.update(
+      'AdminUser',
+      {
+        $or: [
+          {
+            email,
+          },
+          {
+            username: email,
+            email: {
+              $exists: false,
+            },
+          },
+        ],
+      },
+      token,
+      {},
+      true
+    );
   }
 
   sendPasswordResetEmail(email) {
@@ -230,11 +286,16 @@ class UserController extends _AdaptableController.default {
     return this.setPasswordResetToken(email).then(user => {
       const token = encodeURIComponent(user._perishable_token);
       const username = encodeURIComponent(user.username);
-      const link = buildEmailLink(this.config.requestResetPasswordURL, username, token, this.config);
+      const link = buildEmailLink(
+        this.config.requestResetPasswordURL,
+        username,
+        token,
+        this.config
+      );
       const options = {
         appName: this.config.appName,
         link: link,
-        user: (0, _triggers.inflate)('_AdminUser', user)
+        user: (0, _triggers.inflate)('AdminUser', user),
       };
 
       if (this.adapter.sendPasswordResetEmail) {
@@ -248,65 +309,87 @@ class UserController extends _AdaptableController.default {
   }
 
   updatePassword(username, token, password) {
-    return this.checkResetTokenValidity(username, token).then(user => updateUserPassword(user.objectId, password, this.config)).catch(error => {
-      if (error && error.message) {
-        // in case of Parse.Error, fail with the error message only
-        return Promise.reject(error.message);
-      } else {
-        return Promise.reject(error);
-      }
-    });
+    return this.checkResetTokenValidity(username, token)
+      .then(user => updateUserPassword(user.objectId, password, this.config))
+      .catch(error => {
+        if (error && error.message) {
+          // in case of Parse.Error, fail with the error message only
+          return Promise.reject(error.message);
+        } else {
+          return Promise.reject(error);
+        }
+      });
   }
 
-  defaultVerificationEmail({
-    link,
-    user,
-    appName
-  }) {
-    const text = 'Hi,\n\n' + 'You are being asked to confirm the e-mail address ' + user.get('email') + ' with ' + appName + '\n\n' + '' + 'Click here to confirm it:\n' + link;
+  defaultVerificationEmail({ link, user, appName }) {
+    const text =
+      'Hi,\n\n' +
+      'You are being asked to confirm the e-mail address ' +
+      user.get('email') +
+      ' with ' +
+      appName +
+      '\n\n' +
+      '' +
+      'Click here to confirm it:\n' +
+      link;
     const to = user.get('email');
     const subject = 'Please verify your e-mail for ' + appName;
     return {
       text,
       to,
-      subject
+      subject,
     };
   }
 
-  defaultResetPasswordEmail({
-    link,
-    user,
-    appName
-  }) {
-    const text = 'Hi,\n\n' + 'You requested to reset your password for ' + appName + (user.get('username') ? " (your username is '" + user.get('username') + "')" : '') + '.\n\n' + '' + 'Click here to reset it:\n' + link;
+  defaultResetPasswordEmail({ link, user, appName }) {
+    const text =
+      'Hi,\n\n' +
+      'You requested to reset your password for ' +
+      appName +
+      (user.get('username')
+        ? " (your username is '" + user.get('username') + "')"
+        : '') +
+      '.\n\n' +
+      '' +
+      'Click here to reset it:\n' +
+      link;
     const to = user.get('email') || user.get('username');
     const subject = 'Password Reset for ' + appName;
     return {
       text,
       to,
-      subject
+      subject,
     };
   }
-
 } // Mark this private
-
 
 exports.UserController = UserController;
 
 function updateUserPassword(userId, password, config) {
-  return _rest.default.update(config, Auth.master(config), '_AdminUser', {
-    objectId: userId
-  }, {
-    password: password
-  });
+  return _rest.default.update(
+    config,
+    Auth.master(config),
+    'AdminUser',
+    {
+      objectId: userId,
+    },
+    {
+      password: password,
+    }
+  );
 }
 
 function buildEmailLink(destination, username, token, config) {
   const usernameAndToken = `token=${token}&username=${username}`;
 
   if (config.parseFrameURL) {
-    const destinationWithoutHost = destination.replace(config.publicServerURL, '');
-    return `${config.parseFrameURL}?link=${encodeURIComponent(destinationWithoutHost)}&${usernameAndToken}`;
+    const destinationWithoutHost = destination.replace(
+      config.publicServerURL,
+      ''
+    );
+    return `${config.parseFrameURL}?link=${encodeURIComponent(
+      destinationWithoutHost
+    )}&${usernameAndToken}`;
   } else {
     return `${destination}?${usernameAndToken}`;
   }

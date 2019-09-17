@@ -5,14 +5,14 @@ import Auth from '../AdminAuth';
 
 export class AdminSessionsRouter extends ClassesRouter {
   className() {
-    return '_AdminSession';
+    return 'AdminSession';
   }
 
   handleMe(req) {
     // TODO: Verify correct behavior
     if (!req.info || !req.info.sessionToken) {
       throw new Parse.Error(
-        Parse.Error.INVALID_AdminSession_TOKEN,
+        Parse.Error.INVALIDAdminSession_TOKEN,
         'Session token required.'
       );
     }
@@ -20,7 +20,7 @@ export class AdminSessionsRouter extends ClassesRouter {
       .find(
         req.config,
         Auth.master(req.config),
-        '_AdminSession',
+        'AdminSession',
         { sessionToken: req.info.sessionToken },
         undefined,
         req.info.clientSDK
@@ -28,7 +28,7 @@ export class AdminSessionsRouter extends ClassesRouter {
       .then(response => {
         if (!response.results || response.results.length == 0) {
           throw new Parse.Error(
-            Parse.Error.INVALID_AdminSession_TOKEN,
+            Parse.Error.INVALIDAdminSession_TOKEN,
             'Session token not found.'
           );
         }

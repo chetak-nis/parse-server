@@ -45,8 +45,8 @@ const defaultColumns: { [string]: SchemaFields } = Object.freeze({
     emailVerified: { type: 'Boolean' },
     authData: { type: 'Object' },
   },
-   // The additional default columns for the _User collection (in addition to DefaultCols)
-   _AdminUser: {
+  // The additional default columns for the _User collection (in addition to DefaultCols)
+  AdminUser: {
     username: { type: 'String' },
     password: { type: 'String' },
     email: { type: 'String' },
@@ -85,9 +85,9 @@ const defaultColumns: { [string]: SchemaFields } = Object.freeze({
     createdWith: { type: 'Object' },
   },
   // The additional default columns for the _Session collection (in addition to DefaultCols)
-  _AdminSession: {
+  AdminSession: {
     restricted: { type: 'Boolean' },
-    user: { type: 'Pointer', targetClass: '_AdminUser' },
+    user: { type: 'Pointer', targetClass: 'AdminUser' },
     installationId: { type: 'String' },
     sessionToken: { type: 'String' },
     expiresAt: { type: 'Date' },
