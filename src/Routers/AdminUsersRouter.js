@@ -79,7 +79,12 @@ export class UsersRouter extends ClassesRouter {
       } else if (email) {
         query = { email };
       } else {
-        query = { $or: [{ username }, { email: username }] };
+        query = {
+          $or: [
+            { username: { $regex: '^' + username + '$', $options: 'i' } },
+            { email: username },
+          ],
+        };
       }
       return req.config.database
         .find('AdminUser', query)
